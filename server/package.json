@@ -1,0 +1,27 @@
+{
+  "name": "board",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "mehran",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "concurrently": "^5.3.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.9",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "jest": "^26.5.2",
+    "nodemon": "^2.0.4",
+    "supertest": "^5.0.0"
+  }
+}
