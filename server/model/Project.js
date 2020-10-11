@@ -10,6 +10,7 @@ const projectSchema = new mongoose.Schema({
   },
   description: {
     type: String,
+    required: [true, 'Please add a description'],
     trim: true,
   },
   createdAt: {
@@ -22,6 +23,8 @@ const projectSchema = new mongoose.Schema({
 });
 
 // method
-
+projectSchema.methods.getPath = function () {
+  return `/projects/${this._id}`;
+};
 // export model
 module.exports = mongoose.model('project', projectSchema);
