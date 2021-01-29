@@ -1,16 +1,14 @@
 // -----------------imports-----------------
 require('colors');
+const { request } = require('express');
 const express = require('express');
 const morgan = require('morgan');
 const errorResponse = require('./middlewares/errorResponse');
-const { dbConnection } = require('./config/db');
 // -----------------end---------------------
 //env
 if (process.env.NODE_ENV !== 'development') require('dotenv/config');
 
 const app = express();
-
-dbConnection();
 
 // middleware
 app.use(express.json());
@@ -21,6 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // sending to routers
 app.use('/projects', require('./routers/projectsRouter'));
+app.use('/auth', require('./routers/authRouter'));
 
 // error
 app.use(errorResponse);

@@ -13,6 +13,11 @@ const projectSchema = new mongoose.Schema({
     required: [true, 'Please add a description'],
     trim: true,
   },
+  owner: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: [true, 'Project need owner'],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -23,8 +28,6 @@ const projectSchema = new mongoose.Schema({
 });
 
 // method
-projectSchema.methods.getPath = function () {
-  return `/projects/${this._id}`;
-};
+
 // export model
 module.exports = mongoose.model('project', projectSchema);

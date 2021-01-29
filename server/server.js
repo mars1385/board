@@ -1,9 +1,12 @@
 // -----------------imports-----------------
 const app = require('./app');
+const { dbConnection } = require('./config/db');
 
 // -----------------end---------------------
 
 // connect to dataBase
+dbConnection(process.env.DATA_BASE_URL);
+
 const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
