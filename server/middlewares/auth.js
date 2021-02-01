@@ -1,6 +1,6 @@
 // --------------------import--------------------
 const jwt = require('jsonwebtoken');
-const ErrorResponse = require('./errorResponse');
+const ErrorMessage = require('../utils/ErrorMessage');
 const asyncHandler = require('../utils/asyncHandler');
 // models
 const User = require('../model/User');
@@ -15,15 +15,14 @@ exports.protectedRoute = asyncHandler(async (req, res, next) => {
     token = authorization.split(' ')[1];
   }
   // check to see if token exist?
-  if (!token) return next(new ErrorResponse('Not authorized to access this route', 401));
+  if (!token) return next(new ErrorMessage('Not authorized to access this route', 401));
   try {
     // decode
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decodedToken);
     req.user = await User.findById(decodedToken.id);
     next();
   } catch (error) {
     console.log(error);
-    return next(new ErrorResponse('Not authorized to access this route', 401));
+    return next(new ErrorMessage('Not authorized to access this route', 401));
   }
 }); // end

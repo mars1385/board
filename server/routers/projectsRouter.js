@@ -2,7 +2,7 @@
 const express = require('express');
 
 // controllers
-const { createProject, getProject } = require('../controllers/projectsController');
+const { createProject, getProject, getProjects } = require('../controllers/projectsController');
 // auth
 const { protectedRoute } = require('../middlewares/auth');
 // -----------------end---------------------
@@ -10,9 +10,9 @@ const { protectedRoute } = require('../middlewares/auth');
 const router = express.Router();
 
 // "/projects"
-router.route('/').post(protectedRoute, createProject);
+router.route('/').get(protectedRoute, getProjects).post(protectedRoute, createProject);
 // "/projects/:id"
-router.route('/:id').get(getProject);
+router.route('/:id').get(protectedRoute, getProject);
 // exports endPoint
 
 module.exports = router;
