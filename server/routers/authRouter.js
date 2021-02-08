@@ -1,17 +1,21 @@
 //------------------import----------------
 const express = require('express');
 // import controllers
-const { register, login } = require('../controllers/authController');
+const { register, login, getUserInfo } = require('../controllers/authController');
+const { protectedRoute } = require('../middlewares/auth');
 //------------------end-------------------
 
 // router
 const router = express.Router();
 
-// for '/api/auth/register'
+// for '/auth/register'
 router.route('/register').post(register);
 
-// for '/api/auth/login'
+// for '/auth/login'
 router.route('/login').post(login);
+
+// for '/auth/userInfo'
+router.route('/userInfo').get(protectedRoute, getUserInfo);
 
 // export router
 module.exports = router;

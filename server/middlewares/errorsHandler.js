@@ -2,7 +2,7 @@
 const ErrorMessage = require('../utils/ErrorMessage');
 // ----------------end--------------------
 // custom error handler
-const errorResponse = (err, req, res, next) => {
+const errorsHandler = (err, req, res, next) => {
   // our errors
   let error = { ...err };
   error.message = err.message;
@@ -32,4 +32,4 @@ const errorResponse = (err, req, res, next) => {
 };
 
 // export
-module.exports = errorResponse;
+module.exports = errorsHandler;

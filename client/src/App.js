@@ -7,6 +7,7 @@ import setAuthHeader from './Utils/setAuthHeader';
 // code splitting with react lazy (our pages)
 const Home = lazy(() => import('./Pages/Home/Home'));
 const Login = lazy(() => import('./Pages/Login/Login'));
+const Register = lazy(() => import('./Pages/Register/Register'));
 // end
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Suspense fallback={'loading...'}>
           <Route exact path='/' component={Home} />
           <Route exact path='/login' component={Login} />
+          <Route exact path='/register' component={Register} />
         </Suspense>
       </div>
     </Router>

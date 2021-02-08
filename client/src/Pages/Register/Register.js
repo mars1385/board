@@ -7,8 +7,8 @@ import { useForm } from 'react-hook-form';
 
 // material ui style
 const useStyles = makeStyles((theme) => ({
-  login: {
-    marginTop: theme.spacing(8),
+  register: {
+    marginTop: theme.spacing(4),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -21,31 +21,54 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: theme.spacing(1),
   },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
 }));
 
-const Login = () => {
+const Register = () => {
   // state
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, setError } = useForm();
   const classes = useStyles();
 
   const onSubmit = (data) => {
-    console.log(data);
+    if (data.confirmPassword === data.password) {
+      console.log(data);
+    } else {
+      setError('confirmPassword', {
+        type: 'validate',
+        message: 'Passwords Must be Match',
+      });
+    }
   };
   // jsx
   return (
     <Container component='main' maxWidth='xs'>
-      <div className={classes.login}>
+      <div className={classes.register}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component='h1' variant='h5'>
-          Login
+          Register
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <TextField
+                variant='outlined'
+                margin='normal'
+                required
+                fullWidth
+                id='name'
+                label='Name'
+                name='name'
+                autoComplete='name'
+                autoFocus
+                inputRef={register({ required: true })}
+              />
+              {errors.name && (
+                <Typography align='inherit' color='error' variant='subtitle1'>
+                  {'Please add your Name'}
+                </Typography>
+              )}
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 variant='outlined'
@@ -57,7 +80,6 @@ const Login = () => {
                 name='email'
                 type='email'
                 autoComplete='email'
-                autoFocus
                 inputRef={register({ required: true })}
               />
               {errors.email && (
@@ -66,6 +88,7 @@ const Login = () => {
                 </Typography>
               )}
             </Grid>
+
             <Grid item xs={12}>
               <TextField
                 variant='outlined'
@@ -86,8 +109,26 @@ const Login = () => {
               )}
             </Grid>
             <Grid item xs={12}>
+              <TextField
+                variant='outlined'
+                margin='normal'
+                required
+                fullWidth
+                name='confirmPassword'
+                label='Confirm Password'
+                type='password'
+                id='confirmPassword'
+                inputRef={register({ required: true, minLength: 6 })}
+              />
+              {errors.confirmPassword && (
+                <Typography align='inherit' color='error' variant='subtitle2'>
+                  {'Passwords Must be Match'}
+                </Typography>
+              )}
+            </Grid>
+            <Grid item xs={12}>
               <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
-                Login
+                Register
               </Button>
             </Grid>
           </Grid>
@@ -97,4 +138,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
