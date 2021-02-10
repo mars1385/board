@@ -3,7 +3,9 @@ const app = require('../../app');
 const supertest = require('supertest');
 const { dbDisconnect, dbConnection } = require('../../config/db');
 const Project = require('../../model/Project');
+const User = require('../../model/User');
 const factorys = require('../factory/Factorys');
+const { signIn } = require('../helper');
 // -----------------end--------------------
 
 const request = supertest(app);
@@ -14,6 +16,7 @@ describe('user working with project', () => {
   });
   afterAll(async () => {
     await Project.deleteMany();
+    await User.deleteMany();
     await dbDisconnect();
   });
 
@@ -38,7 +41,7 @@ describe('user working with project', () => {
   });
 
   it('user can create a project', async () => {
-    const result = await request.post('/auth/register').send(factorys.build('userFactory'));
+    const result = await signIn(request, factorys);
     const data = factorys.build('projectFactory');
 
     let response = await request
@@ -55,7 +58,7 @@ describe('user working with project', () => {
   });
 
   it('a user can get their project', async () => {
-    const result = await request.post('/auth/register').send(factorys.build('userFactory'));
+    const result = await signIn(request, factorys);
     const data = factorys.build('projectFactory');
     // create
     let project = await request
@@ -74,7 +77,7 @@ describe('user working with project', () => {
   });
 
   it('a auth user can not get others project', async () => {
-    const result = await request.post('/auth/register').send(factorys.build('userFactory'));
+    const result = await signIn(request, factorys);
     const data = factorys.build('projectFactory');
     // create
     const project = await Project.create(data);
@@ -88,7 +91,7 @@ describe('user working with project', () => {
   });
 
   it('project require a title', async () => {
-    const result = await request.post('/auth/register').send(factorys.build('userFactory'));
+    const result = await signIn(request, factorys);
     const project = factorys.build('projectFactory', { title: null });
     let response = await request
       .post('/projects')
@@ -99,7 +102,7 @@ describe('user working with project', () => {
   });
 
   it('project require a description', async () => {
-    const result = await request.post('/auth/register').send(factorys.build('userFactory'));
+    const result = await signIn(request, factorys);
     const project = factorys.build('projectFactory', { description: null });
     let response = await request
       .post('/projects')

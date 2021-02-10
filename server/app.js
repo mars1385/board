@@ -1,6 +1,5 @@
 // -----------------imports-----------------
 require('colors');
-const { request } = require('express');
 const express = require('express');
 const morgan = require('morgan');
 const errorsHandler = require('./middlewares/errorsHandler');
@@ -20,6 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 // sending to routers
 app.use('/projects', require('./routers/projectsRouter'));
 app.use('/auth', require('./routers/authRouter'));
+app.use('/projects/:id/tasks', require('./routers/projectTasksRouter'));
 
 // error
 app.use(errorsHandler);

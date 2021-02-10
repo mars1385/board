@@ -58,7 +58,7 @@ describe('testing authentication', () => {
     let userResponse = await request.post('/auth/register').send(newUser);
 
     expect(userResponse.status).toBe(400);
-    expect(userResponse.body.error).toContain('Duplicate field value entered');
+    expect(userResponse.body.error).toContain('There is user with this email');
   });
 
   it('login should contain password', async () => {
