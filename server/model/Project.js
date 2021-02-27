@@ -1,5 +1,6 @@
 // -----------------imports-----------------
 const mongoose = require('mongoose');
+const Task = require('./Task');
 // -----------------end---------------------
 
 const projectSchema = new mongoose.Schema({
@@ -26,8 +27,6 @@ const projectSchema = new mongoose.Schema({
     type: Date,
   },
 });
-
-// method
 
 // export model
 module.exports = mongoose.model('project', projectSchema);

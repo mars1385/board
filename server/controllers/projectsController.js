@@ -24,7 +24,7 @@ exports.getProject = asyncHandler(async (req, res, next) => {
   const project = await Project.findById(id);
 
   if (req.user.id !== project.owner.toString()) {
-    return next(new ErrorMessage('User is not owner', 403));
+    return next(new ErrorMessage('User is not owner', 403, ['auth']));
   }
 
   res.status(200).json({

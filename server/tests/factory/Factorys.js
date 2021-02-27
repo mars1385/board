@@ -21,4 +21,13 @@ Factory.define('projectFactory').attrs({
   },
 });
 
+Factory.define('taskFactory').attrs({
+  _id: () => new ObjectId(),
+  body: () => faker.commerce.productDescription(),
+  project: function () {
+    const project = Factory.build('projectFactory');
+    return project._id;
+  },
+});
+
 module.exports = Factory;

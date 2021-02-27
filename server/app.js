@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 // sending to routers
 app.use('/projects', require('./routers/projectsRouter'));
 app.use('/auth', require('./routers/authRouter'));
-app.use('/projects/:id/tasks', require('./routers/projectTasksRouter'));
+app.use('/projects/tasks', require('./routers/projectTasksRouter'));
 
 // error
 app.use(errorsHandler);

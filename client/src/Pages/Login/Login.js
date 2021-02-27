@@ -1,8 +1,13 @@
 // ------------imports---------------
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 import { Container, Avatar, Typography, TextField, Button, makeStyles, Grid } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useForm } from 'react-hook-form';
+
+import { loginUser } from '../../Redux/user/userActions';
+import { selectCurrentUser, selectServerErrors } from '../../Redux/user/userSelectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 // ------------end imports-----------
 
 // material ui style
@@ -26,13 +31,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Login = () => {
+const Login = ({ history }) => {
   // state
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
   const classes = useStyles();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const { currentUser, serverErrors } = useSelector(
+    createStructuredSelector({
+      currentUser: selectCurrentUser,
+      serverErrors: selectServerErrors,
+    })
+  );
+  useEffect(() => {
+    if (serverErrors) {
+      serverErrors.forEach((err) => {
+        setError(err.field, {
+          type: 'validate',
+          message: err.message,
+        });
+      });
+    }
+  }, [serverErrors, setError]);
+
+  useEffect(() => {
+    if (currentUser) {
+      history.push('/projects');
+    }
+  }, [currentUser, history]);
+  const dispatch = useDispatch();
+
+  const onSubmit = (data, event) => {
+    event.preventDefault();
+    dispatch(
+      loginUser({
+        email: data.email,
+        password: data.password,
+      })
+    );
   };
   // jsx
   return (
@@ -50,7 +85,6 @@ const Login = () => {
               <TextField
                 variant='outlined'
                 margin='normal'
-                required
                 fullWidth
                 id='email'
                 label='Email Address'
@@ -70,7 +104,6 @@ const Login = () => {
               <TextField
                 variant='outlined'
                 margin='normal'
-                required
                 fullWidth
                 name='password'
                 label='Password'
@@ -85,8 +118,21 @@ const Login = () => {
                 </Typography>
               )}
             </Grid>
+            {errors.login && (
+              <Grid item xs={12}>
+                <Typography align='inherit' color='error' variant='subtitle2'>
+                  {errors.login.message}
+                </Typography>
+              </Grid>
+            )}
             <Grid item xs={12}>
-              <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                color='primary'
+                onClick={() => clearErrors('login')}
+                className={classes.submit}>
                 Login
               </Button>
             </Grid>
@@ -97,4 +143,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default memo(Login);

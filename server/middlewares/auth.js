@@ -15,7 +15,7 @@ exports.protectedRoute = asyncHandler(async (req, res, next) => {
     token = authorization.split(' ')[1];
   }
   // check to see if token exist?
-  if (!token) return next(new ErrorMessage('Not authorized to access this route', 401));
+  if (!token) return next(new ErrorMessage('Not authorized to access this route', 401, ['auth']));
   try {
     // decode
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -23,6 +23,6 @@ exports.protectedRoute = asyncHandler(async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
-    return next(new ErrorMessage('Not authorized to access this route', 401));
+    return next(new ErrorMessage('Not authorized to access this route', 401, ['auth']));
   }
 }); // end

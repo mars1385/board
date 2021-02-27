@@ -3,10 +3,15 @@ const mongoose = require('mongoose');
 // -----------------end---------------------
 
 const taskSchema = new mongoose.Schema({
-  title: {
+  body: {
     type: String,
     trim: true,
-    required: [true, 'Please add a title'],
+    required: [true, 'Please add a body'],
+  },
+  project: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Project',
+    required: [true, 'Task need to belong a project'],
   },
   createdAt: {
     type: Date,

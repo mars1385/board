@@ -1,4 +1,4 @@
-import { REGISTER_START, SET_USER_INFO, AUTH_FAILED, lOGIN_START, LOGOUT_USER } from '../type';
+import { SET_USER_INFO, AUTH_FAILED, LOGOUT_USER, AUTH_START } from '../type';
 
 const initialState = {
   loading: false,
@@ -6,10 +6,9 @@ const initialState = {
   error: null,
 };
 
-export default function (state = initialState, action) {
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case REGISTER_START:
-    case lOGIN_START:
+    case AUTH_START:
       return { ...state, currentUser: null, error: null, loading: true };
     case SET_USER_INFO:
       return { ...state, currentUser: action.payload, error: null, loading: false };
@@ -20,4 +19,6 @@ export default function (state = initialState, action) {
     default:
       return state;
   }
-}
+};
+
+export default userReducer;

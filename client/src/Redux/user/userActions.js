@@ -1,15 +1,10 @@
-import { REGISTER_START, SET_USER_INFO, AUTH_FAILED, lOGIN_START, LOGOUT_USER } from '../type';
+import { SET_USER_INFO, AUTH_FAILED, AUTH_START, LOGOUT_USER } from '../type';
 import axios from 'axios';
 import setAuthHeader from '../../Utils/setAuthHeader';
 
-export const startRegisterUser = (userInfo) => ({
-  type: REGISTER_START,
-  payload: userInfo,
-});
-
-export const registerSuccess = (userInfo) => async (dispatch) => {
+export const registerUser = (userInfo) => async (dispatch) => {
   try {
-    console.log(userInfo);
+    dispatch(startAuth());
     const registerResponse = await axios.post('/auth/register', userInfo);
     const { token } = registerResponse.data;
 
@@ -17,22 +12,15 @@ export const registerSuccess = (userInfo) => async (dispatch) => {
     setAuthHeader(token);
     dispatch(getUserInfo(token));
   } catch (error) {
-    console.log(error.response.data);
     dispatch({
       type: AUTH_FAILED,
-      payload: error.response.data,
+      payload: error.response.data.error,
     });
   }
 };
 
-export const startLogin = (userInfo) => ({
-  type: lOGIN_START,
-  payload: userInfo,
-});
-
-export const loginSuccess = (userInfo) => async (dispatch) => {
+export const loginUser = (userInfo) => async (dispatch) => {
   try {
-    console.log(userInfo);
     const registerResponse = await axios.post('/auth/login', userInfo);
     const { token } = registerResponse.data;
 
@@ -40,13 +28,16 @@ export const loginSuccess = (userInfo) => async (dispatch) => {
     setAuthHeader(token);
     dispatch(getUserInfo(token));
   } catch (error) {
-    console.log(error.response.data);
     dispatch({
       type: AUTH_FAILED,
-      payload: error.response.data,
+      payload: error.response.data.error,
     });
   }
 };
+
+export const startAuth = () => ({
+  type: AUTH_START,
+});
 
 export const logoutUser = () => (dispatch) => {
   localStorage.removeItem('jwt_token');
@@ -56,7 +47,7 @@ export const logoutUser = () => (dispatch) => {
   });
 };
 
-export const getUserInfo = (token = async (dispatch) => {
+export const getUserInfo = () => async (dispatch) => {
   try {
     const userInfo = await axios.get('/auth/userInfo');
     dispatch({
@@ -66,7 +57,7 @@ export const getUserInfo = (token = async (dispatch) => {
   } catch (error) {
     dispatch({
       type: AUTH_FAILED,
-      payload: error.response.data,
+      payload: error.response.data.error,
     });
   }
-});
+};

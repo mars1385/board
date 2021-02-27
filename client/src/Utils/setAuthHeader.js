@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const setAuthHeader = (jwtToken) => {
   if (jwtToken) {
-    axios.defaults.headers.common['Authorization'] = jwtToken;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${jwtToken}`;
   } else {
     delete axios.defaults.headers.common['Authorization'];
   }

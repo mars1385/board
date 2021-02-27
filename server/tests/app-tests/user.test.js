@@ -4,7 +4,6 @@ const supertest = require('supertest');
 const { dbDisconnect, dbConnection } = require('../../config/db');
 const factorys = require('../factory/Factorys');
 const User = require('../../model/User');
-const { response } = require('express');
 // -----------------end-------------------
 
 const request = supertest(app);
@@ -23,7 +22,7 @@ describe('testing authentication', () => {
     let userResponse = await request.post('/auth/register').send(user);
 
     expect(userResponse.status).toBe(400);
-    expect(userResponse.body.error).toContain('Please add a name');
+    expect(userResponse.body.error).toContainEqual({ field: 'name', message: 'Please add a name' });
   });
 
   it('register should contain email', async () => {
@@ -31,7 +30,7 @@ describe('testing authentication', () => {
     let userResponse = await request.post('/auth/register').send(user);
 
     expect(userResponse.status).toBe(400);
-    expect(userResponse.body.error).toContain('Please add an email');
+    expect(userResponse.body.error).toContainEqual({ field: 'email', message: 'Please add an email' });
   });
 
   it('register should contain password', async () => {
@@ -39,7 +38,7 @@ describe('testing authentication', () => {
     let userResponse = await request.post('/auth/register').send(user);
 
     expect(userResponse.status).toBe(400);
-    expect(userResponse.body.error).toContain('Please add a password');
+    expect(userResponse.body.error).toContainEqual({ field: 'password', message: 'Please add a password' });
   });
 
   it('a user can register', async () => {
@@ -52,13 +51,15 @@ describe('testing authentication', () => {
 
   it('a user can not register  with already register email', async () => {
     const user = factorys.build('userFactory');
-    await request.post('/auth/register').send(user);
-
+    await User.create(user);
     const newUser = factorys.build('userFactory', { email: user.email });
     let userResponse = await request.post('/auth/register').send(newUser);
 
     expect(userResponse.status).toBe(400);
-    expect(userResponse.body.error).toContain('There is user with this email');
+    expect(userResponse.body.error).toContainEqual({
+      field: 'email',
+      message: 'There is user with this email',
+    });
   });
 
   it('login should contain password', async () => {
@@ -66,7 +67,10 @@ describe('testing authentication', () => {
     let userResponse = await request.post('/auth/login').send({ password });
 
     expect(userResponse.status).toBe(400);
-    expect(userResponse.body.error).toContain('Please provide an email and password');
+    expect(userResponse.body.error).toContainEqual({
+      field: 'login',
+      message: 'Please provide an email and password',
+    });
   });
 
   it('login should contain email', async () => {
@@ -74,15 +78,21 @@ describe('testing authentication', () => {
     let userResponse = await request.post('/auth/login').send({ email });
 
     expect(userResponse.status).toBe(400);
-    expect(userResponse.body.error).toContain('Please provide an email and password');
+    expect(userResponse.body.error).toContainEqual({
+      field: 'login',
+      message: 'Please provide an email and password',
+    });
   });
 
-  it('user with this must be register', async () => {
+  it('user with this email must be register', async () => {
     const { email, password } = factorys.build('userFactory');
     let userResponse = await request.post('/auth/login').send({ email, password });
 
     expect(userResponse.status).toBe(401);
-    expect(userResponse.body.error).toContain('Email Or Password is Wrong');
+    expect(userResponse.body.error).toContainEqual({
+      field: 'login',
+      message: 'Email Or Password is Wrong',
+    });
   });
 
   it('entered password must be match with user password', async () => {
@@ -91,7 +101,10 @@ describe('testing authentication', () => {
     let userResponse = await request.post('/auth/login').send({ email, password: 'qwesdde112' });
 
     expect(userResponse.status).toBe(401);
-    expect(userResponse.body.error).toContain('Email Or Password is Wrong');
+    expect(userResponse.body.error).toContainEqual({
+      field: 'login',
+      message: 'Email Or Password is Wrong',
+    });
   });
 
   it('a user can login', async () => {
@@ -107,7 +120,10 @@ describe('testing authentication', () => {
     const user = await request.get('/auth/userInfo');
 
     expect(user.status).toBe(401);
-    expect(user.body.error).toContain('Not authorized to access this route');
+    expect(user.body.error).toContainEqual({
+      field: 'auth',
+      message: 'Not authorized to access this route',
+    });
   });
 
   it('a user can get his info', async () => {

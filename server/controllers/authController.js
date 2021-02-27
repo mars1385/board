@@ -18,13 +18,14 @@ exports.register = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  if (!email || !password) return next(new ErrorMessage('Please provide an email and password', 400));
+  const field = ['login'];
+  if (!email || !password) return next(new ErrorMessage('Please provide an email and password', 400, field));
 
   const user = await User.findOne({ email }).select('+password');
-  if (!user) return next(new ErrorMessage('Email Or Password is Wrong', 401));
+  if (!user) return next(new ErrorMessage('Email Or Password is Wrong', 401, field));
 
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) return next(new ErrorMessage('Email Or Password is Wrong', 401));
+  if (!isMatch) return next(new ErrorMessage('Email Or Password is Wrong', 401, field));
 
   sendTokenResponse(user, 200, res);
 });

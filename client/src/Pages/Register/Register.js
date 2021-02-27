@@ -1,8 +1,13 @@
 // ------------imports---------------
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 import { Container, Avatar, Typography, TextField, Button, makeStyles, Grid } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useForm } from 'react-hook-form';
+
+import { registerUser } from '../../Redux/user/userActions';
+import { selectCurrentUser, selectServerErrors } from '../../Redux/user/userSelectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 // ------------end imports-----------
 
 // material ui style
@@ -23,14 +28,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Register = () => {
+const Register = ({ history }) => {
   // state
   const { register, handleSubmit, errors, setError } = useForm();
   const classes = useStyles();
 
+  const { currentUser, serverErrors } = useSelector(
+    createStructuredSelector({
+      currentUser: selectCurrentUser,
+      serverErrors: selectServerErrors,
+    })
+  );
+  useEffect(() => {
+    if (serverErrors) {
+      serverErrors.forEach((err) => {
+        setError(err.field, {
+          type: 'validate',
+          message: err.message,
+        });
+      });
+    }
+  }, [serverErrors, setError]);
+
+  useEffect(() => {
+    if (currentUser) {
+      history.push('/projects');
+    }
+  }, [currentUser, history]);
+  const dispatch = useDispatch();
+
   const onSubmit = (data) => {
     if (data.confirmPassword === data.password) {
-      console.log(data);
+      dispatch(
+        registerUser({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        })
+      );
     } else {
       setError('confirmPassword', {
         type: 'validate',
@@ -54,18 +89,17 @@ const Register = () => {
               <TextField
                 variant='outlined'
                 margin='normal'
-                required
                 fullWidth
                 id='name'
                 label='Name'
                 name='name'
                 autoComplete='name'
                 autoFocus
-                inputRef={register({ required: true })}
+                inputRef={register({ required: { value: true, message: 'Please add your Name' } })}
               />
               {errors.name && (
                 <Typography align='inherit' color='error' variant='subtitle1'>
-                  {'Please add your Name'}
+                  {errors.name.message}
                 </Typography>
               )}
             </Grid>
@@ -73,18 +107,17 @@ const Register = () => {
               <TextField
                 variant='outlined'
                 margin='normal'
-                required
                 fullWidth
                 id='email'
                 label='Email Address'
                 name='email'
                 type='email'
                 autoComplete='email'
-                inputRef={register({ required: true })}
+                inputRef={register({ required: { value: true, message: 'Please add a valid Email' } })}
               />
               {errors.email && (
                 <Typography align='inherit' color='error' variant='subtitle1'>
-                  {'Please add a valid Email'}
+                  {errors.email.message}
                 </Typography>
               )}
             </Grid>
@@ -93,18 +126,22 @@ const Register = () => {
               <TextField
                 variant='outlined'
                 margin='normal'
-                required
                 fullWidth
                 name='password'
                 label='Password'
                 type='password'
                 id='password'
                 autoComplete='current-password'
-                inputRef={register({ required: true, minLength: 6 })}
+                inputRef={register({
+                  required: {
+                    value: true,
+                    message: 'Please add a Password!( Password must be more than 6 character)',
+                  },
+                })}
               />
               {errors.password && (
                 <Typography align='inherit' color='error' variant='subtitle2'>
-                  {'Please add a Password!( Password must be more than 6 character)'}
+                  {errors.password.message}
                 </Typography>
               )}
             </Grid>
@@ -112,20 +149,20 @@ const Register = () => {
               <TextField
                 variant='outlined'
                 margin='normal'
-                required
                 fullWidth
                 name='confirmPassword'
                 label='Confirm Password'
                 type='password'
                 id='confirmPassword'
-                inputRef={register({ required: true, minLength: 6 })}
+                inputRef={register({ required: { value: true, message: 'Please add password again' } })}
               />
               {errors.confirmPassword && (
                 <Typography align='inherit' color='error' variant='subtitle2'>
-                  {'Passwords Must be Match'}
+                  {errors.confirmPassword.message}
                 </Typography>
               )}
             </Grid>
+
             <Grid item xs={12}>
               <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
                 Register
@@ -138,4 +175,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default memo(Register);
