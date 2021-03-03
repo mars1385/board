@@ -1,4 +1,10 @@
-import { ADD_PROJECT_FAILED, ADD_PROJECT_SUCCESS, GET_PROJECTS_SUCCESS, GET_PROJECTS_FAILED } from '../type';
+import {
+  ADD_PROJECT_FAILED,
+  ADD_PROJECT_SUCCESS,
+  GET_PROJECTS_SUCCESS,
+  GET_PROJECTS_FAILED,
+  RESET_ALL,
+} from '../type';
 
 const initialState = {
   project: null,
@@ -15,6 +21,8 @@ const projectReducer = (state = initialState, action) => {
     case ADD_PROJECT_FAILED:
     case GET_PROJECTS_FAILED:
       return { ...state, project: null, error: action.payload };
+    case RESET_ALL:
+      return { ...state, projects: null, project: null, error: null };
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import { SET_USER_INFO, AUTH_FAILED, AUTH_START, LOGOUT_USER } from '../type';
+import { SET_USER_INFO, AUTH_FAILED, AUTH_START, LOGOUT_USER, RESET_ALL } from '../type';
 import axios from 'axios';
 import setAuthHeader from '../../Utils/setAuthHeader';
 
@@ -44,6 +44,9 @@ export const logoutUser = () => (dispatch) => {
   setAuthHeader(false);
   dispatch({
     type: LOGOUT_USER,
+  });
+  dispatch({
+    type: RESET_ALL,
   });
 };
 

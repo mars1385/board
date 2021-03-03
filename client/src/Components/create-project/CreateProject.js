@@ -98,7 +98,6 @@ const CreateProject = ({ history }) => {
                     label='Description'
                     name='description'
                     autoComplete='description'
-                    autoFocus
                     inputRef={register({ required: true })}
                   />
                   {errors.description && (

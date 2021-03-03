@@ -16,17 +16,21 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectCard = ({ title, description, projectId }) => {
+const ProjectCard = ({ history, title, description, projectId }) => {
   const classes = useStyles();
 
-  const onClick = (event) => {};
+  const getProjectHandler = (event) => {
+    history.push(`/projects/${projectId}`);
+  };
 
   return (
     <Card className={classes.root} variant='elevation'>
       <CardContent>
         <CardActions className={classes.title}>
           <TitleIcon color='primary' />
-          <Button size='small'>{title}</Button>
+          <Button onClick={() => getProjectHandler()} size='small'>
+            {title}
+          </Button>
         </CardActions>
         <Typography variant='subtitle1' className={classes.desc} color='textSecondary'>
           {description.length > 100 ? `${description.substring(0, 100)}...` : description}

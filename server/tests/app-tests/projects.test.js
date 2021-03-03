@@ -95,6 +95,18 @@ describe('user working with project', () => {
     });
   });
 
+  it('a auth user can not get others projects', async () => {
+    const loginToken = await signIn(request, factorys);
+    const data = factorys.build('projectFactory');
+    // create
+    await Project.create(data);
+    // get
+
+    let response = await request.get(`/projects`).set('authorization', `Bearer ${loginToken}`);
+    expect(response.status).toBe(200);
+    expect(response.body.data).toEqual([]);
+  });
+
   it('project require a title', async () => {
     const loginToken = await signIn(request, factorys);
     const project = factorys.build('projectFactory', { title: null });

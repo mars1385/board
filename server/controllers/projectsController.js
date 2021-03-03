@@ -8,7 +8,7 @@ const ErrorMessage = require('../utils/ErrorMessage');
 // @route   Get /projects
 // @access  Private
 exports.getProjects = asyncHandler(async (req, res, next) => {
-  const projects = await Project.find();
+  const projects = await Project.find({ owner: req.user.id });
 
   res.status(200).json({
     success: true,

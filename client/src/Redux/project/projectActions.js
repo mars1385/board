@@ -1,4 +1,10 @@
-import { ADD_PROJECT_FAILED, ADD_PROJECT_SUCCESS, GET_PROJECTS_FAILED, GET_PROJECTS_SUCCESS } from '../type';
+import {
+  ADD_PROJECT_FAILED,
+  ADD_PROJECT_SUCCESS,
+  GET_PROJECTS_FAILED,
+  GET_PROJECTS_SUCCESS,
+  RESET_ALL,
+} from '../type';
 import axios from 'axios';
 
 export const addProject = ({ title, description, history }) => async (dispatch) => {
@@ -34,3 +40,23 @@ export const getProjects = () => async (dispatch) => {
     });
   }
 };
+
+export const getProject = ({ history, projectId }) => async (dispatch) => {
+  try {
+    const project = await axios.get(`/projects/${projectId}`);
+
+    dispatch({
+      type: ADD_PROJECT_SUCCESS,
+      payload: project.data.data,
+    });
+    history.push(`/projects/${project.data.data._id}`);
+  } catch (error) {
+    dispatch({
+      type: ADD_PROJECT_FAILED,
+      payload: error.response.data.error,
+    });
+  }
+};
+export const resetProjects = () => ({
+  type: RESET_ALL,
+});

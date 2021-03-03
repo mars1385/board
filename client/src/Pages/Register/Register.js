@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Register = ({ history }) => {
   // state
-  const { register, handleSubmit, errors, setError } = useForm();
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm();
   const classes = useStyles();
 
   const { currentUser, serverErrors } = useSelector(
@@ -39,6 +39,7 @@ const Register = ({ history }) => {
       serverErrors: selectServerErrors,
     })
   );
+  console.log(errors);
   useEffect(() => {
     if (serverErrors) {
       serverErrors.forEach((err) => {
@@ -164,7 +165,13 @@ const Register = ({ history }) => {
             </Grid>
 
             <Grid item xs={12}>
-              <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                onClick={() => clearErrors('login')}
+                color='primary'
+                className={classes.submit}>
                 Register
               </Button>
             </Grid>

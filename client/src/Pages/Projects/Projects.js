@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Projects = () => {
+const Projects = ({ history }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -46,15 +46,24 @@ const Projects = () => {
             </Typography>
           </Grid>
           <Grid item xs={6} className={classes.menu} style={{ justifyContent: 'flex-end' }}>
+            <Typography color='textSecondary' variant='subtitle1' style={{ marginRight: 10 }}>
+              Create Project
+            </Typography>
             <CreateProject />
           </Grid>
         </Grid>
         <Grid container spacing={1}>
-          {currentProjects.map((project) => (
-            <Grid key={project._id} item md={4} sm={6} xs={12}>
-              <ProjectCard projectId={project._id} title={project.title} description={project.description} />
-            </Grid>
-          ))}
+          {currentProjects &&
+            currentProjects.map((project) => (
+              <Grid key={project._id} item md={4} sm={6} xs={12}>
+                <ProjectCard
+                  history={history}
+                  projectId={project._id}
+                  title={project.title}
+                  description={project.description}
+                />
+              </Grid>
+            ))}
         </Grid>
       </div>
     </Container>
