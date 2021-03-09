@@ -4,6 +4,7 @@ import {
   GET_PROJECTS_SUCCESS,
   GET_PROJECTS_FAILED,
   RESET_ALL,
+  CLEAR_PROJECT,
 } from '../type';
 
 const initialState = {
@@ -21,6 +22,8 @@ const projectReducer = (state = initialState, action) => {
     case ADD_PROJECT_FAILED:
     case GET_PROJECTS_FAILED:
       return { ...state, project: null, error: action.payload };
+    case CLEAR_PROJECT:
+      return { ...state, project: null, error: null };
     case RESET_ALL:
       return { ...state, projects: null, project: null, error: null };
     default:

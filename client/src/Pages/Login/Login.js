@@ -45,10 +45,15 @@ const Login = ({ history }) => {
   useEffect(() => {
     if (serverErrors) {
       serverErrors.forEach((err) => {
-        setError(err.field, {
-          type: 'validate',
-          message: err.message,
-        });
+        if (err.field) {
+          setError(err.field, {
+            message: err.message,
+          });
+        } else {
+          setError('login', {
+            message: err.message,
+          });
+        }
       });
     }
   }, [serverErrors, setError]);

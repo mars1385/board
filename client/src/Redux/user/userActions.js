@@ -14,7 +14,7 @@ export const registerUser = (userInfo) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: AUTH_FAILED,
-      payload: error.response.data.error,
+      payload: error.response.data.errors,
     });
   }
 };
@@ -30,7 +30,7 @@ export const loginUser = (userInfo) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: AUTH_FAILED,
-      payload: error.response.data.error,
+      payload: error.response.data.errors,
     });
   }
 };
@@ -60,7 +60,7 @@ export const getUserInfo = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: AUTH_FAILED,
-      payload: error.response.data.error,
+      payload: error.response.data.errors,
     });
   }
 };

@@ -1,5 +1,5 @@
 //------------------import----------------
-const ErrorMessage = require('../utils/ErrorMessage');
+const BadRequestError = require('../utils/errors/BadRequestError');
 const asyncHandler = require('../utils/asyncHandler');
 //import models
 const User = require('../model/User');
@@ -9,6 +9,10 @@ const User = require('../model/User');
 // @route   POST auth/register
 // @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
+  const existingUser = await User.findOne({ email: req.body.email });
+
+  if (existingUser) return next(new BadRequestError('An User already exist with this email'));
+
   const newUser = await User.create(req.body);
   sendTokenResponse(newUser, 200, res);
 });
@@ -18,15 +22,13 @@ exports.register = asyncHandler(async (req, res, next) => {
 // @access  Public
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
-  const field = ['login'];
-  if (!email || !password) return next(new ErrorMessage('Please provide an email and password', 400, field));
+  if (!email || !password) return next(new BadRequestError('Please provide an email and password'));
 
   const user = await User.findOne({ email }).select('+password');
-  if (!user) return next(new ErrorMessage('Email Or Password is Wrong', 401, field));
+  if (!user) return next(new BadRequestError('Email Or Password is Wrong'));
 
   const isMatch = await user.comparePassword(password);
-  if (!isMatch) return next(new ErrorMessage('Email Or Password is Wrong', 401, field));
-
+  if (!isMatch) return next(new BadRequestError('Email Or Password is Wrong'));
   sendTokenResponse(user, 200, res);
 });
 

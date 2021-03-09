@@ -3,7 +3,7 @@ import {
   ADD_PROJECT_SUCCESS,
   GET_PROJECTS_FAILED,
   GET_PROJECTS_SUCCESS,
-  RESET_ALL,
+  CLEAR_PROJECT,
 } from '../type';
 import axios from 'axios';
 
@@ -20,7 +20,7 @@ export const addProject = ({ title, description, history }) => async (dispatch) 
   } catch (error) {
     dispatch({
       type: ADD_PROJECT_FAILED,
-      payload: error.response.data.error,
+      payload: error.response.data.errors,
     });
   }
 };
@@ -36,7 +36,7 @@ export const getProjects = () => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: GET_PROJECTS_FAILED,
-      payload: error.response.data.error,
+      payload: error.response.data.errors,
     });
   }
 };
@@ -53,10 +53,11 @@ export const getProject = ({ history, projectId }) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: ADD_PROJECT_FAILED,
-      payload: error.response.data.error,
+      payload: error.response.data.errors,
     });
   }
 };
-export const resetProjects = () => ({
-  type: RESET_ALL,
+
+export const clearProject = () => ({
+  type: CLEAR_PROJECT,
 });

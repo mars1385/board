@@ -1,14 +1,15 @@
 // -----------------imports-----------------
 const asyncHandler = require('../utils/asyncHandler');
 const Project = require('../model/Project');
-const ErrorMessage = require('../utils/ErrorMessage');
+const NotFoundError = require('../utils/errors/NotFoundError');
+const AuthorizationError = require('../utils/errors/AuthorizationError');
 // -----------------end---------------------
 
 // @desc    Get all project
 // @route   Get /projects
 // @access  Private
 exports.getProjects = asyncHandler(async (req, res, next) => {
-  const projects = await Project.find({ owner: req.user.id });
+  const projects = await Project.find({ owner: req.user.id }).sort('-updatedAt');
 
   res.status(200).json({
     success: true,
@@ -23,8 +24,10 @@ exports.getProject = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const project = await Project.findById(id);
 
+  if (!project) return next(new NotFoundError('Project dose not exist'));
+
   if (req.user.id !== project.owner.toString()) {
-    return next(new ErrorMessage('User is not owner', 403, ['auth']));
+    return next(new AuthorizationError());
   }
 
   res.status(200).json({

@@ -39,14 +39,19 @@ const Register = ({ history }) => {
       serverErrors: selectServerErrors,
     })
   );
-  console.log(errors);
+
   useEffect(() => {
     if (serverErrors) {
       serverErrors.forEach((err) => {
-        setError(err.field, {
-          type: 'validate',
-          message: err.message,
-        });
+        if (err.field) {
+          setError(err.field, {
+            message: err.message,
+          });
+        } else {
+          setError('email', {
+            message: err.message,
+          });
+        }
       });
     }
   }, [serverErrors, setError]);
@@ -165,13 +170,7 @@ const Register = ({ history }) => {
             </Grid>
 
             <Grid item xs={12}>
-              <Button
-                type='submit'
-                fullWidth
-                variant='contained'
-                onClick={() => clearErrors('login')}
-                color='primary'
-                className={classes.submit}>
+              <Button type='submit' fullWidth variant='contained' color='primary' className={classes.submit}>
                 Register
               </Button>
             </Grid>

@@ -1,6 +1,5 @@
 // -----------------imports-----------------
 const mongoose = require('mongoose');
-const Task = require('./Task');
 // -----------------end---------------------
 
 const projectSchema = new mongoose.Schema({
@@ -14,6 +13,9 @@ const projectSchema = new mongoose.Schema({
     required: [true, 'Please add a description'],
     trim: true,
   },
+  generalNote: {
+    type: String,
+  },
   owner: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
@@ -25,7 +27,16 @@ const projectSchema = new mongoose.Schema({
   },
   updatedAt: {
     type: Date,
+    default: Date.now,
   },
+});
+
+// method
+projectSchema.pre('findOneAndUpdate', async function (next) {
+  const date = Date.now();
+  console.log(date.toString());
+  this.set({ updatedAt: date });
+  next();
 });
 
 // export model

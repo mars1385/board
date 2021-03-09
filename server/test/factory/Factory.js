@@ -15,6 +15,7 @@ Factory.define('projectFactory').attrs({
   _id: () => new ObjectId(),
   title: () => faker.name.title(),
   description: () => faker.commerce.productDescription(),
+  generalNote: () => faker.lorem.paragraphs(2),
   owner: function () {
     const user = Factory.build('userFactory');
     return user._id;
