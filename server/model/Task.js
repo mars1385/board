@@ -46,7 +46,6 @@ taskSchema.pre('findOneAndUpdate', async function (next) {
 
   const taskToUpdate = await this.model.findOne(this.getFilter());
 
-  console.log(date.toString());
   await Project.findByIdAndUpdate(
     taskToUpdate.project,
     { updatedAt: date },
@@ -59,4 +58,4 @@ taskSchema.pre('findOneAndUpdate', async function (next) {
   next();
 });
 // export model
-module.exports = mongoose.model('task', taskSchema);
+module.exports = mongoose.model('Task', taskSchema);

@@ -5,7 +5,6 @@ const Project = require('../../model/Project');
 const Task = require('../../model/Task');
 const factory = require('../../test/factory/Factory');
 const { signIn } = require('../../test/helper');
-const jwt = require('jsonwebtoken');
 // -----------------end--------------------
 
 const request = supertest(app);
@@ -43,9 +42,7 @@ describe('user working with project tasks', () => {
   it('only owner of project can update task', async () => {
     const loginToken = await signIn(request);
 
-    const project = await Project.create(factory.build('projectFactory'));
-
-    const task = await Task.create(factory.build('taskFactory', { project: project.id }));
+    const { project, task } = await new global.Project({ task: 1 }).create();
 
     const updateTaskResponse = await request
       .patch(`/projects/${project.id}/tasks/${task.id}`)
@@ -64,9 +61,7 @@ describe('user working with project tasks', () => {
   it('a project can only update their own task', async () => {
     const loginToken = await signIn(request);
 
-    const user = jwt.verify(loginToken, process.env.JWT_SECRET);
-
-    const project = await Project.create(factory.build('projectFactory', { owner: user.id }));
+    const { project } = await new global.Project({ loginToken }).create();
 
     const task = await Task.create(factory.build('taskFactory'));
 
@@ -87,9 +82,7 @@ describe('user working with project tasks', () => {
   it('a project can have tasks', async () => {
     const loginToken = await signIn(request);
 
-    const user = jwt.verify(loginToken, process.env.JWT_SECRET);
-
-    const project = await Project.create(factory.build('projectFactory', { owner: user.id }));
+    const { project } = await new global.Project({ loginToken }).create();
 
     const task = await request
       .post(`/projects/${project.id}/tasks`)
@@ -108,11 +101,7 @@ describe('user working with project tasks', () => {
   it('a project task can be updated', async () => {
     const loginToken = await signIn(request);
 
-    const user = jwt.verify(loginToken, process.env.JWT_SECRET);
-
-    const project = await Project.create(factory.build('projectFactory', { owner: user.id }));
-
-    const task = await Task.create(factory.build('taskFactory', { project: project.id }));
+    const { project, task } = await new global.Project({ loginToken, task: 1 }).create();
 
     const updateTaskResponse = await request
       .patch(`/projects/${project.id}/tasks/${task.id}`)
@@ -130,8 +119,7 @@ describe('user working with project tasks', () => {
   it('a task require body', async () => {
     const loginToken = await signIn(request);
 
-    const user = jwt.verify(loginToken, process.env.JWT_SECRET);
-    const project = await Project.create(factory.build('projectFactory', { owner: user.id }));
+    const { project } = await new global.Project({ loginToken }).create();
 
     const task = factory.build('taskFactory', { body: null, project: project.id });
 

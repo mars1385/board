@@ -57,4 +57,4 @@ userSchema.methods.generateJwtToken = function () {
   return token;
 }; // end
 // export model
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model('User', userSchema);
