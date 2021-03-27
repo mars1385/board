@@ -106,14 +106,52 @@ describe('user working with project tasks', () => {
     const updateTaskResponse = await request
       .patch(`/projects/${project.id}/tasks/${task.id}`)
       .set('authorization', `Bearer ${loginToken}`)
-      .send({ body: 'changed', status: true })
+      .send({ body: 'changed' })
       .expect(200);
 
     const getTask = await Task.findById(updateTaskResponse.body.task._id);
 
     expect(updateTaskResponse.body.task.body).toEqual(getTask.body);
+  });
+
+  it('a project task can be completed', async () => {
+    const loginToken = await signIn(request);
+
+    const { project, task } = await new global.Project({ loginToken, task: 1 }).create();
+
+    const updateTaskResponse = await request
+      .patch(`/projects/${project.id}/tasks/${task.id}`)
+      .set('authorization', `Bearer ${loginToken}`)
+      .send({ status: true })
+      .expect(200);
+
+    await Task.findById(updateTaskResponse.body.task._id);
+
     expect(updateTaskResponse.body.task.status).toBeDefined();
-    expect(updateTaskResponse.body.task.status).toEqual(getTask.status);
+    expect(updateTaskResponse.body.task.status).toEqual(true);
+  });
+
+  it('a project task can be completed', async () => {
+    const loginToken = await signIn(request);
+
+    const { project, task } = await new global.Project({ loginToken, task: 1 }).create();
+
+    let updateTaskResponse = await request
+      .patch(`/projects/${project.id}/tasks/${task.id}`)
+      .set('authorization', `Bearer ${loginToken}`)
+      .send({ status: true })
+      .expect(200);
+
+    updateTaskResponse = await request
+      .patch(`/projects/${project.id}/tasks/${task.id}`)
+      .set('authorization', `Bearer ${loginToken}`)
+      .send({ status: false })
+      .expect(200);
+
+    await Task.findById(updateTaskResponse.body.task._id);
+
+    expect(updateTaskResponse.body.task.status).toBeDefined();
+    expect(updateTaskResponse.body.task.status).toEqual(false);
   });
 
   it('a task require body', async () => {

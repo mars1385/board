@@ -1,6 +1,7 @@
 // -----------------imports-----------------
 const asyncHandler = require('../utils/asyncHandler');
 const Project = require('../model/Project');
+require('../model/Activity');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const AuthorizationError = require('../utils/errors/AuthorizationError');
 // -----------------end---------------------

@@ -19,7 +19,11 @@ exports.protectedRoute = asyncHandler(async (req, res, next) => {
   try {
     // decode
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decodedToken.id);
+    const user = await User.findById(decodedToken.id);
+
+    if (!user) return next(new AuthorizationError());
+
+    req.user = user;
     next();
   } catch (error) {
     console.log(error);

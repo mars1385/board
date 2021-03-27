@@ -18,6 +18,8 @@ const errorsHandler = (err, req, res, next) => {
       errors: err.errorMessage(),
     });
   }
+
+  console.log(err.message);
   res.status(500).json({
     errors: [{ message: 'Something went wrong' }],
   });

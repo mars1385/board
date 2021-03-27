@@ -1,6 +1,7 @@
 // -----------------imports-----------------
 const mongoose = require('mongoose');
 const Project = require('./Project');
+const Activity = require('./Activity');
 // -----------------end---------------------
 
 const taskSchema = new mongoose.Schema({
@@ -31,29 +32,25 @@ const taskSchema = new mongoose.Schema({
 // method
 taskSchema.pre('save', async function (next) {
   const date = Date.now();
-  await Project.findByIdAndUpdate(
-    this.project,
-    { updatedAt: date },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+
+  const project = await Project.updateOne({ _id: this.project }, { updatedAt: date });
+
+  await Activity.create({ owner: project.owner, project: this.project, description: 'create_task' });
   next();
 });
 taskSchema.pre('findOneAndUpdate', async function (next) {
   const date = Date.now();
 
+  const { status } = this.getUpdate();
   const taskToUpdate = await this.model.findOne(this.getFilter());
 
-  await Project.findByIdAndUpdate(
-    taskToUpdate.project,
-    { updatedAt: date },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const project = await Project.updateOne({ _id: this.project }, { updatedAt: date });
+
+  await Activity.create({
+    owner: project.owner,
+    project: taskToUpdate.project,
+    description: status ? 'completed_task' : 'unCompleted_task',
+  });
   this.set({ updatedAt: date });
   next();
 });

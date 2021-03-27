@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const app = require('../app');
 const Project = require('../model/Project');
 const Task = require('../model/Task');
+
 const factory = require('./factory/Factory');
 const jwt = require('jsonwebtoken');
 
@@ -12,7 +13,7 @@ beforeAll(async () => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
-  console.log(console.log(`dataBase is connected : ${connect.connection.host}`.green.underline.bold));
+  // console.log(console.log(`dataBase is connected : ${connect.connection.host}`.green.underline.bold));
 });
 
 beforeEach(async () => {
