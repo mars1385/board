@@ -10,7 +10,7 @@ const Task = require('../../model/Task');
 const request = supertest(app);
 
 describe('user working with project', () => {
-  it('guest user can not create project', async () => {
+  it('unAuthorized user can not create project', async () => {
     const project = factory.build('projectFactory', { owner: null });
     let response = await request.post('/projects').send(project).expect(401);
 
@@ -19,7 +19,7 @@ describe('user working with project', () => {
     });
   });
 
-  it('guest user can not get projects', async () => {
+  it('unAuthorized user can not get projects', async () => {
     let response = await request.get('/projects').expect(401);
 
     expect(response.body.errors).toContainEqual({
@@ -27,9 +27,18 @@ describe('user working with project', () => {
     });
   });
 
-  it('guest user can not get single project', async () => {
+  it('unAuthorized user can not get single project', async () => {
     const project = factory.build('projectFactory');
     let response = await request.get(`/projects/${project.id}`).expect(401);
+
+    expect(response.body.errors).toContainEqual({
+      message: 'Not authorized to access this route',
+    });
+  });
+
+  it('unAuthorized user can not remove project', async () => {
+    const project = factory.build('projectFactory');
+    let response = await request.delete(`/projects/${project.id}`).expect(401);
 
     expect(response.body.errors).toContainEqual({
       message: 'Not authorized to access this route',

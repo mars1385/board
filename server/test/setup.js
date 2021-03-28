@@ -46,9 +46,9 @@ global.Project = class {
 
   create = async () => {
     let projectInput;
-
+    let user;
     if (this.loginToken) {
-      const user = jwt.verify(this.loginToken, process.env.JWT_SECRET);
+      user = jwt.verify(this.loginToken, process.env.JWT_SECRET);
       projectInput = factory.build('projectFactory', { owner: user.id });
     } else {
       projectInput = factory.build('projectFactory');
@@ -57,7 +57,9 @@ global.Project = class {
 
     let task = null;
     if (this.task !== 0) {
-      task = await Task.create(factory.build('taskFactory', { project: project._id }));
+      task = user
+        ? await Task.create(factory.build('taskFactory', { project: project._id, owner: user.id }))
+        : await Task.create(factory.build('taskFactory', { project: project._id }));
     }
 
     return {

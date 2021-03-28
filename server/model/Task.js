@@ -19,6 +19,11 @@ const taskSchema = new mongoose.Schema({
     ref: 'Project',
     required: [true, 'Task need to belong a project'],
   },
+  owner: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: [true, 'Task need to belong a user'],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -33,25 +38,44 @@ const taskSchema = new mongoose.Schema({
 taskSchema.pre('save', async function (next) {
   const date = Date.now();
 
-  const project = await Project.updateOne({ _id: this.project }, { updatedAt: date });
+  await Project.updateOne({ _id: this.project }, { updatedAt: date });
 
-  await Activity.create({ owner: project.owner, project: this.project, description: 'create_task' });
+  await Activity.create({
+    user: this.owner,
+    project: this.project,
+    description: 'create_task',
+    subject: this.body,
+  });
   next();
 });
 taskSchema.pre('findOneAndUpdate', async function (next) {
   const date = Date.now();
 
-  const { status } = this.getUpdate();
+  const { status, body } = this.getUpdate();
   const taskToUpdate = await this.model.findOne(this.getFilter());
 
-  const project = await Project.updateOne({ _id: this.project }, { updatedAt: date });
-
+  await Project.updateOne({ _id: this.project }, { updatedAt: date });
   await Activity.create({
-    owner: project.owner,
+    user: taskToUpdate.owner,
     project: taskToUpdate.project,
     description: status ? 'completed_task' : 'unCompleted_task',
+    subject: body,
   });
   this.set({ updatedAt: date });
+  next();
+});
+
+taskSchema.pre('remove', async function (next) {
+  const date = Date.now();
+  await Project.updateOne({ _id: this.project }, { updatedAt: date });
+
+  await Activity.create({
+    user: this.owner,
+    project: this.project,
+    subject: this.body,
+    description: 'remove_task',
+  });
+
   next();
 });
 // export model

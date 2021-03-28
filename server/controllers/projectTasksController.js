@@ -13,6 +13,7 @@ exports.addTasks = asyncHandler(async (req, res, next) => {
   const project = await authProjectTask(req.params.projectId, req.user, next);
 
   req.body.project = project._id;
+  req.body.owner = req.user.id;
   const task = await Task.create(req.body);
   res.status(201).json({
     success: true,
@@ -72,7 +73,8 @@ const authProjectTask = async (projectId, user, next) => {
     return next(new NotFoundError('Project dose not exits'));
   }
 
-  if (project.owner.toString() !== user.id) {
+  if (project.owner.toString() !== user.id || !project.members.includes(user.id)) {
+    console.log('object');
     return next(new AuthorizationError());
   }
 

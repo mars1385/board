@@ -23,6 +23,12 @@ const projectSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Project need owner'],
     },
+    members: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -54,18 +60,21 @@ const projectSchema = new mongoose.Schema(
 // });
 
 // method
+
 projectSchema.pre('save', async function (next) {
-  await Activity.create({ owner: this.owner, project: this._id, description: 'created' });
+  await Activity.create({ user: this.owner, project: this._id, description: 'created' });
   next();
 });
 projectSchema.pre('findOneAndUpdate', async function (next) {
   const date = Date.now();
   const projectToUpdate = await this.model.findOne(this.getFilter());
+
   if (projectToUpdate) {
     await Activity.create({
-      owner: projectToUpdate.owner,
+      user: projectToUpdate.owner,
       project: projectToUpdate._id,
       description: 'updated',
+      changes: this.getUpdate(),
     });
   }
   this.set({ updatedAt: date });
@@ -78,5 +87,10 @@ projectSchema.pre('remove', async function (next) {
   next();
 });
 
+projectSchema.methods.invite = async function (userId) {
+  this.members = [...this.members, userId];
+  this.save();
+  return;
+};
 // export model
 module.exports = mongoose.model('Project', projectSchema);

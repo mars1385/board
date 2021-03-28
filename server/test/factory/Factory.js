@@ -29,6 +29,10 @@ Factory.define('taskFactory').attrs({
     const project = Factory.build('projectFactory');
     return project._id;
   },
+  owner: function () {
+    const user = Factory.build('userFactory');
+    return user._id;
+  },
 });
 
 module.exports = Factory;

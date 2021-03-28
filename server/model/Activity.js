@@ -8,13 +8,19 @@ const activitySchema = new mongoose.Schema({
     required: [true, 'Please add a description'],
     trim: true,
   },
-  owner: {
+  user: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
   },
   project: {
     type: mongoose.Schema.ObjectId,
     ref: 'Project',
+  },
+  subject: {
+    type: String,
+  },
+  changes: {
+    type: Object,
   },
   createdAt: {
     type: Date,

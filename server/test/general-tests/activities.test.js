@@ -5,6 +5,7 @@ const factory = require('../../test/factory/Factory');
 const { signIn } = require('../../test/helper');
 const Project = require('../../model/Project');
 const Activity = require('../../model/Activity');
+const Task = require('../../model/Task');
 // -----------------end--------------------
 
 const request = supertest(app);
@@ -32,18 +33,18 @@ describe('creating activity', () => {
     );
 
     const projectActivity = await Activity.find({ project: project._id });
-
     expect(projectActivity).toHaveLength(2);
     expect(projectActivity[1].description).toEqual('updated');
   });
 
   it('creating task for project ', async () => {
-    const { project } = await new global.Project({ task: 1 }).create();
+    const { project, task } = await new global.Project({ task: 1 }).create();
 
     const projectActivity = await Activity.find({ project: project._id });
 
     expect(projectActivity).toHaveLength(2);
     expect(projectActivity[projectActivity.length - 1].description).toEqual('create_task');
+    expect(projectActivity[projectActivity.length - 1].subject).toEqual(task.body);
   });
 
   it('completing task for project ', async () => {
@@ -60,6 +61,7 @@ describe('creating activity', () => {
 
     expect(projectActivity).toHaveLength(3);
     expect(projectActivity[projectActivity.length - 1].description).toEqual('completed_task');
+    expect(projectActivity[projectActivity.length - 1].subject).toEqual('changed');
   });
 
   it('inCompleting task for project ', async () => {
@@ -82,5 +84,19 @@ describe('creating activity', () => {
 
     expect(projectActivity).toHaveLength(4);
     expect(projectActivity[projectActivity.length - 1].description).toEqual('unCompleted_task');
+    expect(projectActivity[projectActivity.length - 1].subject).toEqual('changed');
+  });
+
+  it('deleting task for project ', async () => {
+    const { project, task } = await new global.Project({ task: 1 }).create();
+
+    const removeTask = await Task.findById(task._id);
+
+    await removeTask.remove();
+
+    const projectActivity = await Activity.find({ project: project._id });
+
+    expect(projectActivity).toHaveLength(3);
+    expect(projectActivity[projectActivity.length - 1].description).toEqual('remove_task');
   });
 });
