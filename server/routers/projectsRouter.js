@@ -10,6 +10,7 @@ const {
   removeProject,
 } = require('../controllers/projectsController');
 const projectTasksRouter = require('./projectTasksRouter');
+const invitationRoute = require('./invitationRoute');
 // auth
 const { protectedRoute } = require('../middlewares/auth');
 // -----------------end---------------------
@@ -18,6 +19,8 @@ const router = express.Router();
 
 //  "/projects/:projectId/tasks"
 router.use('/:projectId/tasks', projectTasksRouter);
+//  "/projects/:projectId/invitation"
+router.use('/:projectId/invitation', invitationRoute);
 
 // "/projects"
 router.route('/').get(protectedRoute, getProjects).post(protectedRoute, createProject);

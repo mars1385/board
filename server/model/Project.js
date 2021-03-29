@@ -88,8 +88,8 @@ projectSchema.pre('remove', async function (next) {
 });
 
 projectSchema.methods.invite = async function (userId) {
-  this.members = [...this.members, userId];
-  this.save();
+  this.members.push(userId);
+  await this.save();
   return;
 };
 // export model

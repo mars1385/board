@@ -73,8 +73,8 @@ const authProjectTask = async (projectId, user, next) => {
     return next(new NotFoundError('Project dose not exits'));
   }
 
-  if (project.owner.toString() !== user.id || !project.members.includes(user.id)) {
-    console.log('object');
+  // console.log(project.owner.toString() !== user.id && !project.members.includes(user.id));
+  if (project.owner.toString() !== user.id && !project.members.includes(user.id)) {
     return next(new AuthorizationError());
   }
 

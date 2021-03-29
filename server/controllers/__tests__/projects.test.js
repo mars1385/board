@@ -5,6 +5,8 @@ const Project = require('../../model/Project');
 const factory = require('../../test/factory/Factory');
 const { signIn } = require('../../test/helper');
 const Task = require('../../model/Task');
+const jwt = require('jsonwebtoken');
+const User = require('../../model/User');
 // -----------------end--------------------
 
 const request = supertest(app);
@@ -12,6 +14,7 @@ const request = supertest(app);
 describe('user working with project', () => {
   it('unAuthorized user can not create project', async () => {
     const project = factory.build('projectFactory', { owner: null });
+
     let response = await request.post('/projects').send(project).expect(401);
 
     expect(response.body.errors).toContainEqual({
@@ -29,6 +32,7 @@ describe('user working with project', () => {
 
   it('unAuthorized user can not get single project', async () => {
     const project = factory.build('projectFactory');
+
     let response = await request.get(`/projects/${project.id}`).expect(401);
 
     expect(response.body.errors).toContainEqual({
@@ -38,6 +42,7 @@ describe('user working with project', () => {
 
   it('unAuthorized user can not remove project', async () => {
     const project = factory.build('projectFactory');
+
     let response = await request.delete(`/projects/${project.id}`).expect(401);
 
     expect(response.body.errors).toContainEqual({
@@ -47,6 +52,7 @@ describe('user working with project', () => {
 
   it('user can create a project', async () => {
     const loginToken = await signIn(request);
+
     const data = factory.build('projectFactory');
 
     let response = await request
@@ -92,7 +98,6 @@ describe('user working with project', () => {
     const loginToken = await signIn(request);
 
     const { project, task } = await new global.Project({ loginToken, task: 1 }).create();
-
     await request
       .delete(`/projects/${project._id}`)
       .send({})
@@ -100,6 +105,7 @@ describe('user working with project', () => {
       .expect(200);
 
     const deletedProject = await Project.findOne({ _id: project._id, owner: project.owner });
+
     const deletedProjectTasks = await Task.find({ project: project._id });
 
     expect(deletedProject).toBe(null);
@@ -110,7 +116,6 @@ describe('user working with project', () => {
     const loginToken = await signIn(request);
 
     const { project } = await new global.Project({ loginToken }).create();
-
     // get
     let response = await request
       .get(`/projects/${project._id}`)
@@ -121,12 +126,50 @@ describe('user working with project', () => {
     expect(response.body.data.description).toEqual(project.description);
   });
 
+  it('a user can get their invited project', async () => {
+    const loginToken = await signIn(request);
+
+    const project = await Project.create(factory.build('projectFactory'));
+
+    const user = await jwt.verify(loginToken, process.env.JWT_SECRET);
+
+    await project.invite(user.id);
+    // get
+    let response = await request
+      .get(`/projects/${project._id}`)
+      .set('authorization', `Bearer ${loginToken}`)
+      .expect(200);
+
+    expect(response.body.data.title).toEqual(project.title);
+    expect(response.body.data.description).toEqual(project.description);
+  });
+
+  it('a user can get projects that they invited to', async () => {
+    const loginToken = await signIn(request);
+
+    const project = await Project.create(factory.build('projectFactory'));
+    const newProject = await Project.create(factory.build('projectFactory'));
+
+    await new global.Project({ loginToken }).create();
+
+    const user = await jwt.verify(loginToken, process.env.JWT_SECRET);
+
+    const newUser = await User.create(factory.build('userFactory'));
+
+    await project.invite(user.id);
+    await project.invite(newUser._id);
+    await newProject.invite(newUser.id);
+    // get
+    let response = await request.get(`/projects`).set('authorization', `Bearer ${loginToken}`).expect(200);
+
+    // expect(response.body.data).toEqual([expect.objectContaining(project), expect.anything()]);
+  });
+
   it('a auth user can not get others project', async () => {
     const loginToken = await signIn(request);
     // create
     const project = await Project.create(factory.build('projectFactory'));
     // get
-
     let response = await request
       .get(`/projects/${project._id}`)
       .set('authorization', `Bearer ${loginToken}`)
@@ -142,7 +185,6 @@ describe('user working with project', () => {
     // create
     await Project.create(factory.build('projectFactory'));
     // get
-
     let response = await request.get(`/projects`).set('authorization', `Bearer ${loginToken}`).expect(200);
 
     expect(response.body.data).toEqual([]);
@@ -153,7 +195,6 @@ describe('user working with project', () => {
     // create
     const project = await Project.create(factory.build('projectFactory'));
     // get
-
     let response = await request
       .patch(`/projects/${project._id}`)
       .set('authorization', `Bearer ${loginToken}`)
@@ -166,6 +207,7 @@ describe('user working with project', () => {
 
   it('project require a title', async () => {
     const loginToken = await signIn(request);
+
     const project = factory.build('projectFactory', { title: null });
 
     let response = await request

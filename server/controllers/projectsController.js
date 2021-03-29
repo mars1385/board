@@ -10,11 +10,13 @@ const AuthorizationError = require('../utils/errors/AuthorizationError');
 // @route   Get /projects
 // @access  Private
 exports.getProjects = asyncHandler(async (req, res, next) => {
-  const projects = await Project.find({ owner: req.user.id }).sort('-updatedAt');
+  const ownedProjects = await Project.find({ owner: req.user.id }).sort('-updatedAt');
+
+  const invitedProjects = await Project.find({ members: req.user.id });
 
   res.status(200).json({
     success: true,
-    data: projects,
+    data: ownedProjects.concat(invitedProjects),
   });
 });
 
@@ -23,11 +25,19 @@ exports.getProjects = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.getProject = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
-  const project = await Project.findById(id);
+  let project = await Project.findById(id);
+
+  const invitedProject = await Project.findOne({ _id: id, members: req.user.id });
+
+  if (!project || invitedProject) {
+    project = invitedProject;
+  }
 
   if (!project) return next(new NotFoundError('Project dose not exist'));
 
-  if (req.user.id !== project.owner.toString()) {
+  // console.log(req.user.id !== project.owner.toString() && !project.members.includes(req.user.id));
+
+  if (req.user.id !== project.owner.toString() && !project.members.includes(req.user.id)) {
     return next(new AuthorizationError());
   }
 
