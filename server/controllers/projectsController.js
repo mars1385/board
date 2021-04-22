@@ -4,6 +4,7 @@ const Project = require('../model/Project');
 require('../model/Activity');
 const NotFoundError = require('../utils/errors/NotFoundError');
 const AuthorizationError = require('../utils/errors/AuthorizationError');
+const Activity = require('../model/Activity');
 // -----------------end---------------------
 
 // @desc    Get all project
@@ -73,6 +74,7 @@ exports.updateProject = asyncHandler(async (req, res, next) => {
     return next(new AuthorizationError());
   }
 
+  console.log(req.body);
   const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, {
     runValidators: true,
     new: true,
@@ -94,6 +96,17 @@ exports.removeProject = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
+  });
+});
+
+// @desc    Get all activities for project
+// @route   GET /projects/:projectId/activity
+// @access  Private
+exports.getActivities = asyncHandler(async (req, res, next) => {
+  const activities = await Activity.find({ project: req.params.projectId });
+
+  res.status(200).json({
+    activities,
   });
 });
 

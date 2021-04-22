@@ -1,5 +1,5 @@
 import React from 'react';
-import { getProject, clearProject } from '../../Redux/project/projectActions';
+import { getProject, clearProject, updateProject, getActivities } from '../../Redux/project/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectProject, selectServerErrors } from '../../Redux/project/projectSelector';
@@ -14,7 +14,7 @@ import {
   Link,
   Paper,
   InputBase,
-  withStyles,
+  Button,
 } from '@material-ui/core';
 import ProjectCard from '../../Components/card/ProjectCard';
 import CreateTask from '../../Components/create-task/CreateTask';
@@ -55,9 +55,15 @@ const Project = ({ history, match }) => {
     })
   );
 
+  const [notes, setNotes] = React.useState('');
+
   React.useEffect(() => {
     if (currentProject) {
       dispatch(getTasks({ projectId: currentProject._id }));
+
+      dispatch(getActivities({ projectId: currentProject._id }));
+
+      setNotes(currentProject.generalNote ? currentProject.generalNote : '');
     }
 
     return () => {
@@ -75,6 +81,12 @@ const Project = ({ history, match }) => {
 
   const getBack = () => {
     history.push('/projects');
+  };
+
+  const updateNote = () => {
+    if (currentProject) {
+      dispatch(updateProject({ data: { generalNote: notes }, projectId: currentProject._id }));
+    }
   };
 
   return (
@@ -117,8 +129,20 @@ const Project = ({ history, match }) => {
               </Typography>
 
               <Paper elevation={1} className={classes.input} style={{ minHeight: 100 }}>
-                <InputBase placeholder='Note' fullWidth multiline />
+                <InputBase
+                  placeholder='Note'
+                  fullWidth
+                  multiline
+                  onChange={(event) => {
+                    setNotes(event.target.value);
+                  }}
+                  value={notes}
+                />
               </Paper>
+
+              <Button variant='contained' color='primary' onClick={updateNote} style={{ marginTop: 10 }}>
+                Save Notes
+              </Button>
             </Grid>
             <Grid item lg={3} md={4} sm={12} xs={12} className={classes.card}>
               <ProjectCard

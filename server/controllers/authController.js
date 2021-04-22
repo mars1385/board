@@ -37,6 +37,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 // @access  Private
 exports.getUserInfo = asyncHandler(async (req, res, next) => {
   res.status(200).json({
+    id: req.user.id,
     name: req.user.name,
     email: req.user.email,
   });

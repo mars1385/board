@@ -8,6 +8,7 @@ const {
   getProjects,
   updateProject,
   removeProject,
+  getActivities,
 } = require('../controllers/projectsController');
 const projectTasksRouter = require('./projectTasksRouter');
 const invitationRoute = require('./invitationRoute');
@@ -30,6 +31,8 @@ router
   .get(protectedRoute, getProject)
   .patch(protectedRoute, updateProject)
   .delete(protectedRoute, removeProject);
+
+router.route('/:projectId/activities').get(protectedRoute, getActivities);
 // exports endPoint
 
 module.exports = router;
