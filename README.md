@@ -16,7 +16,6 @@ react
 react-redux
 redux-thunk
 react-router
------------
 express
 mongodb
 jest
