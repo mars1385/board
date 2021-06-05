@@ -4,6 +4,7 @@ import CreateProject from '../../Components/create-project/CreateProject';
 import ProjectCard from '../../Components/card/ProjectCard';
 import { getProjects } from '../../Redux/project/projectActions';
 import { selectProjects } from '../../Redux/project/projectSelector';
+import { selectCurrentUser } from '../../Redux/user/userSelectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
@@ -27,9 +28,10 @@ const Projects = ({ history }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { currentProjects } = useSelector(
+  const { currentProjects, currentUser } = useSelector(
     createStructuredSelector({
       currentProjects: selectProjects,
+      currentUser: selectCurrentUser,
     })
   );
 
@@ -46,9 +48,6 @@ const Projects = ({ history }) => {
             </Typography>
           </Grid>
           <Grid item xs={6} className={classes.menu} style={{ justifyContent: 'flex-end' }}>
-            <Typography color='textSecondary' variant='subtitle1' style={{ marginRight: 10 }}>
-              Create Project
-            </Typography>
             <CreateProject />
           </Grid>
         </Grid>
@@ -61,6 +60,8 @@ const Projects = ({ history }) => {
                   projectId={project._id}
                   title={project.title}
                   description={project.description}
+                  userId={currentUser.id}
+                  creator={project.owner}
                 />
               </Grid>
             ))}

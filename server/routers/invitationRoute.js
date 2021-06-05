@@ -1,7 +1,7 @@
 //------------------import----------------
 const express = require('express');
 // import controllers
-const { inviteUser } = require('../controllers/invitationController');
+const { inviteUser, getMember } = require('../controllers/invitationController');
 const { protectedRoute } = require('../middlewares/auth');
 //------------------end-------------------
 
@@ -9,7 +9,7 @@ const { protectedRoute } = require('../middlewares/auth');
 const router = express.Router({ mergeParams: true });
 
 // for '/projects/:projectId/invitation
-router.route('/').post(protectedRoute, inviteUser);
+router.route('/').post(protectedRoute, inviteUser).get(protectedRoute, getMember);
 
 // export router
 module.exports = router;

@@ -9,6 +9,8 @@ import {
   CLEAR_PROJECT,
   GET_ACTIVITIES_SUCCESS,
   GET_ACTIVITIES_FAILED,
+  GET_INVITED_USER,
+  INVITE_USER_FAILED,
 } from '../type';
 
 const initialState = {
@@ -16,6 +18,7 @@ const initialState = {
   projectActivity: null,
   projects: null,
   error: null,
+  members: null,
 };
 
 const projectReducer = (state = initialState, action) => {
@@ -25,15 +28,18 @@ const projectReducer = (state = initialState, action) => {
       return { ...state, project: action.payload, error: null };
     case GET_PROJECTS_SUCCESS:
       return { ...state, projects: action.payload, error: null };
+    case GET_INVITED_USER:
+      return { ...state, members: action.payload };
     case ADD_PROJECT_FAILED:
     case GET_PROJECTS_FAILED:
     case UPDATE_PROJECT_FAILED:
     case GET_ACTIVITIES_FAILED:
+    case INVITE_USER_FAILED:
       return { ...state, project: null, projectActivity: null, error: action.payload };
     case GET_ACTIVITIES_SUCCESS:
       return { ...state, projectActivity: action.payload, error: null };
     case CLEAR_PROJECT:
-      return { ...state, project: null, projectActivity: null, error: null };
+      return { ...state, project: null, projectActivity: null, error: null, members: null };
     case RESET_ALL:
       return { ...state, projects: null, project: null, projectActivity: null, error: null };
     default:

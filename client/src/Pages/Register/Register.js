@@ -13,7 +13,7 @@ import { createStructuredSelector } from 'reselect';
 // material ui style
 const useStyles = makeStyles((theme) => ({
   register: {
-    marginTop: theme.spacing(4),
+    marginTop: theme.spacing(9),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

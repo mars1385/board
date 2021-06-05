@@ -106,6 +106,7 @@ describe('testing authentication', () => {
     const { body } = await request.post('/auth/register').send({ email, password, name }).expect(200);
     const user = await request.get('/auth/userInfo').set('authorization', `Bearer ${body.token}`).expect(200);
 
-    expect(user.body).toEqual({ name, email });
+    expect(user.body.name).toEqual(name);
+    expect(user.body.email).toEqual(email);
   });
 });

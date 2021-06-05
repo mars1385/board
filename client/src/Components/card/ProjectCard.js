@@ -18,7 +18,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectCard = ({ history, title, description, projectId }) => {
+const ProjectCard = ({ history, title, description, projectId, creator, userId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -38,9 +38,11 @@ const ProjectCard = ({ history, title, description, projectId }) => {
           <Button onClick={() => getProjectHandler()} size='small'>
             {title}
           </Button>
-          <Button onClick={removeProjectHandler} size='small' color='secondary'>
-            Remove
-          </Button>
+          {creator === userId && (
+            <Button onClick={removeProjectHandler} size='small' color='secondary'>
+              Remove
+            </Button>
+          )}
         </CardActions>
         <Typography variant='subtitle1' className={classes.desc} color='textSecondary'>
           {description.length > 100 ? `${description.substring(0, 100)}...` : description}

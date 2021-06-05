@@ -2,9 +2,11 @@ import React from 'react';
 import { getProject, clearProject, updateProject, getActivities } from '../../Redux/project/projectActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectProject, selectServerErrors } from '../../Redux/project/projectSelector';
+import { selectProject, selectServerErrors, selectMembers } from '../../Redux/project/projectSelector';
 import { selectTasks } from '../../Redux/tasks/tasksSelector';
+import { selectCurrentUser } from '../../Redux/user/userSelectors';
 import { getTasks, clearTasks } from '../../Redux/tasks/tasksActions';
+import { getMember } from '../../Redux/project/projectActions';
 import {
   Container,
   makeStyles,
@@ -19,6 +21,8 @@ import {
 import ProjectCard from '../../Components/card/ProjectCard';
 import CreateTask from '../../Components/create-task/CreateTask';
 import UpdateTask from '../../Components/update-task/UpdateTask';
+import InviteUser from '../../Components/invite-user/InviteUser';
+import Gravatar from 'react-gravatar';
 
 // material ui style
 const useStyles = makeStyles((theme) => ({
@@ -41,17 +45,23 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginTop: 45,
   },
+  small: {
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+  },
 }));
 
 const Project = ({ history, match }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { currentProject, errors, currentTasks } = useSelector(
+  const { currentProject, errors, currentTasks, currentUser, members } = useSelector(
     createStructuredSelector({
       currentProject: selectProject,
       currentTasks: selectTasks,
       errors: selectServerErrors,
+      currentUser: selectCurrentUser,
+      members: selectMembers,
     })
   );
 
@@ -62,6 +72,8 @@ const Project = ({ history, match }) => {
       dispatch(getTasks({ projectId: currentProject._id }));
 
       dispatch(getActivities({ projectId: currentProject._id }));
+
+      dispatch(getMember({ projectId: currentProject._id }));
 
       setNotes(currentProject.generalNote ? currentProject.generalNote : '');
     }
@@ -94,7 +106,7 @@ const Project = ({ history, match }) => {
       {currentProject && (
         <div className={classes.project}>
           <Grid container spacing={1}>
-            <Grid item xs>
+            <Grid item xs={6}>
               <Breadcrumbs aria-label='breadcrumb' className={classes.header}>
                 <Link color='inherit' variant='subtitle1' className={classes.link} onClick={getBack}>
                   My Projects
@@ -104,11 +116,24 @@ const Project = ({ history, match }) => {
                 </Typography>
               </Breadcrumbs>
             </Grid>
+
+            <Grid item xs={2}>
+              {members && (
+                <>
+                  {members.map((member) => (
+                    <Avatar className={classes.small}>
+                      <Gravatar email={member} />
+                    </Avatar>
+                  ))}
+                </>
+              )}
+            </Grid>
+            <Grid item xs={2}>
+              {currentUser.id === currentProject.owner && <InviteUser projectId={currentProject._id} />}
+            </Grid>
             <Grid item xs={2}>
               <CreateTask projectId={currentProject._id} />
             </Grid>
-            <Grid item xs={3}></Grid>
-            <Grid item xs={3}></Grid>
           </Grid>
           <Grid container spacing={1}>
             <Grid item lg={9} md={8} sm={12} xs={12}>
@@ -151,6 +176,8 @@ const Project = ({ history, match }) => {
                 title={currentProject.title}
                 description={currentProject.description}
                 projectId={currentProject._id}
+                creator={currentProject.owner}
+                userId={currentUser.id}
               />
             </Grid>
           </Grid>

@@ -7,3 +7,5 @@ export const selectProject = createSelector([selectProjectsData], (project) => p
 export const selectProjects = createSelector([selectProjectsData], (project) => project.projects);
 
 export const selectServerErrors = createSelector([selectProjectsData], (project) => project.error);
+
+export const selectMembers = createSelector([selectProjectsData], (project) => project.members);

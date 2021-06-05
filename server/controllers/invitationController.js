@@ -27,3 +27,21 @@ exports.inviteUser = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+// @desc    Get project member
+// @route   GET /projects/:projectId/invitation
+// @access  Private
+exports.getMember = asyncHandler(async (req, res, next) => {
+  const project = await Project.findById(req.params.projectId).populate({
+    path: 'members',
+    select: 'email',
+  });
+
+  if (!project) return next(new NotFoundError('Project Not Found'));
+
+  const members = project.members.map((member) => member.email);
+
+  res.status(200).json({
+    members,
+  });
+});

@@ -52,9 +52,15 @@ const CreateProject = ({ history }) => {
   };
   return (
     <div>
-      <Fab size='medium' color='secondary' aria-label='add' onClick={handleOpen}>
-        <AddIcon />
-      </Fab>
+      <Button
+        variant='contained'
+        size='medium'
+        color='secondary'
+        aria-label='add'
+        onClick={handleOpen}
+        startIcon={<SaveIcon />}>
+        Create Project
+      </Button>
       <Modal
         aria-labelledby='transition-modal-title'
         aria-describedby='transition-modal-description'
