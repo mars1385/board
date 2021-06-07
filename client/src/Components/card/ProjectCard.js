@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles, Card, CardActions, CardContent, Button, Typography } from '@material-ui/core';
+import { makeStyles, Card, CardActions, CardContent, Button, Typography, Box } from '@material-ui/core';
 import TitleIcon from '@material-ui/icons/Title';
 import { useDispatch } from 'react-redux';
 import { removeProject } from '../../Redux/project/projectActions';
+
+import EditProject from '../edit-project/EditProject';
 
 const useStyles = makeStyles({
   root: {
@@ -15,6 +17,11 @@ const useStyles = makeStyles({
   },
   desc: {
     paddingLeft: 35,
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: 40,
   },
 });
 
@@ -38,15 +45,19 @@ const ProjectCard = ({ history, title, description, projectId, creator, userId }
           <Button onClick={() => getProjectHandler()} size='small'>
             {title}
           </Button>
-          {creator === userId && (
-            <Button onClick={removeProjectHandler} size='small' color='secondary'>
-              Remove
-            </Button>
-          )}
         </CardActions>
         <Typography variant='subtitle1' className={classes.desc} color='textSecondary'>
           {description.length > 100 ? `${description.substring(0, 100)}...` : description}
         </Typography>
+
+        {creator === userId && (
+          <Box className={classes.buttons}>
+            <EditProject projectId={projectId} title={title} description={description} />
+            <Button onClick={removeProjectHandler} color='secondary' size='small'>
+              Remove
+            </Button>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

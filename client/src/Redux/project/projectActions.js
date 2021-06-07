@@ -121,16 +121,17 @@ export const getActivities =
   };
 
 export const invite =
-  ({ email, projectId }) =>
+  ({ email, projectId, history }) =>
   async (dispatch) => {
     try {
       await axios.post(`/projects/${projectId}/invitation`, { email });
 
       dispatch(getMember({ projectId }));
     } catch (error) {
+      console.log(error.response.data);
       dispatch({
         type: INVITE_USER_FAILED,
-        data: error.response.data.errors,
+        payload: error.response.data.errors,
       });
     }
   };
@@ -148,7 +149,7 @@ export const getMember =
     } catch (error) {
       dispatch({
         type: INVITE_USER_FAILED,
-        data: error.response.data.errors,
+        payload: error.response.data.errors,
       });
     }
   };

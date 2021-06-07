@@ -17,11 +17,14 @@ import {
   Paper,
   InputBase,
   Button,
+  Avatar,
+  Box,
+  Divider,
 } from '@material-ui/core';
 import ProjectCard from '../../Components/card/ProjectCard';
 import CreateTask from '../../Components/create-task/CreateTask';
 import UpdateTask from '../../Components/update-task/UpdateTask';
-import InviteUser from '../../Components/invite-user/InviteUser';
+import InviteUserCard from '../../Components/invite-user/InviteUserCard';
 import Gravatar from 'react-gravatar';
 
 // material ui style
@@ -41,9 +44,15 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     margin: '8px 0 ',
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   card: {
     marginTop: 45,
+  },
+  avatars: {
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
   small: {
     width: theme.spacing(3),
@@ -106,7 +115,7 @@ const Project = ({ history, match }) => {
       {currentProject && (
         <div className={classes.project}>
           <Grid container spacing={1}>
-            <Grid item xs={6}>
+            <Grid item xs={8}>
               <Breadcrumbs aria-label='breadcrumb' className={classes.header}>
                 <Link color='inherit' variant='subtitle1' className={classes.link} onClick={getBack}>
                   My Projects
@@ -117,29 +126,27 @@ const Project = ({ history, match }) => {
               </Breadcrumbs>
             </Grid>
 
-            <Grid item xs={2}>
+            <Grid item xs={4}>
               {members && (
-                <>
+                <Box className={classes.avatars}>
                   {members.map((member) => (
-                    <Avatar className={classes.small}>
+                    <Avatar key={member} className={classes.small}>
                       <Gravatar email={member} />
                     </Avatar>
                   ))}
-                </>
+                </Box>
               )}
-            </Grid>
-            <Grid item xs={2}>
-              {currentUser.id === currentProject.owner && <InviteUser projectId={currentProject._id} />}
-            </Grid>
-            <Grid item xs={2}>
-              <CreateTask projectId={currentProject._id} />
             </Grid>
           </Grid>
           <Grid container spacing={1}>
             <Grid item lg={9} md={8} sm={12} xs={12}>
-              <Typography color='textSecondary' className={classes.title} variant='h6'>
-                Tasks
-              </Typography>
+              <Box className={classes.title}>
+                <Typography color='textSecondary' variant='h6'>
+                  Tasks
+                </Typography>
+
+                <CreateTask projectId={currentProject._id} />
+              </Box>
 
               {currentTasks && currentTasks.length > 0 ? (
                 currentTasks.map((task) => <UpdateTask key={task._id} task={task} />)
@@ -179,6 +186,9 @@ const Project = ({ history, match }) => {
                 creator={currentProject.owner}
                 userId={currentUser.id}
               />
+              {currentProject.owner === currentUser.id && (
+                <InviteUserCard projectId={currentProject._id} history={history} />
+              )}
             </Grid>
           </Grid>
         </div>

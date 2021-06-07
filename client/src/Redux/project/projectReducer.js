@@ -30,11 +30,12 @@ const projectReducer = (state = initialState, action) => {
       return { ...state, projects: action.payload, error: null };
     case GET_INVITED_USER:
       return { ...state, members: action.payload };
+    case INVITE_USER_FAILED:
+      return { ...state, error: action.payload };
     case ADD_PROJECT_FAILED:
     case GET_PROJECTS_FAILED:
     case UPDATE_PROJECT_FAILED:
     case GET_ACTIVITIES_FAILED:
-    case INVITE_USER_FAILED:
       return { ...state, project: null, projectActivity: null, error: action.payload };
     case GET_ACTIVITIES_SUCCESS:
       return { ...state, projectActivity: action.payload, error: null };

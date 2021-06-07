@@ -47,7 +47,7 @@ function App() {
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
             <PrivateRoute exact path='/projects' component={Projects} />
-            <Route exact path='/projects/:projectId' component={Project} />
+            <PrivateRoute exact path='/projects/:projectId' component={Project} />
           </Suspense>
         </div>
       </Router>

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   link: {
-    color: '#fafafa',
+    color: '#000',
     textAlign: 'center',
     textDecoration: 'none',
   },
@@ -37,6 +37,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     textAlign: 'center',
+  },
+  header: {
+    background: 'transparent',
+    boxShadow: 'none',
+  },
+  button: {
+    margin: 5,
   },
 }));
 
@@ -74,7 +81,7 @@ const Header = () => {
   // --
   return (
     <div className={classes.root}>
-      <AppBar position='fixed'>
+      <AppBar position='fixed' className={classes.header}>
         <Toolbar>
           <Typography variant='h6' className={classes.title}>
             <Link className={classes.link} to='/'>
@@ -117,12 +124,12 @@ const Header = () => {
             </div>
           ) : (
             <div>
-              <Button color='inherit'>
+              <Button className={classes.button} variant='outlined' color='secondary'>
                 <Link className={classes.link} to='/login'>
                   Login
                 </Link>
               </Button>
-              <Button color='inherit'>
+              <Button className={classes.button} variant='outlined' color='secondary'>
                 <Link className={classes.link} to='/register'>
                   Register
                 </Link>
