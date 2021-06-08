@@ -11,6 +11,7 @@ import {
   GET_ACTIVITIES_FAILED,
   GET_INVITED_USER,
   INVITE_USER_FAILED,
+  CLEAR_ERROR,
 } from '../type';
 
 const initialState = {
@@ -43,6 +44,8 @@ const projectReducer = (state = initialState, action) => {
       return { ...state, project: null, projectActivity: null, error: null, members: null };
     case RESET_ALL:
       return { ...state, projects: null, project: null, projectActivity: null, error: null };
+    case CLEAR_ERROR:
+      return { ...state, error: null };
     default:
       return state;
   }

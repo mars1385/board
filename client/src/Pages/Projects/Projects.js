@@ -11,7 +11,7 @@ import { createStructuredSelector } from 'reselect';
 // material ui style
 const useStyles = makeStyles((theme) => ({
   projects: {
-    marginTop: theme.spacing(12),
+    marginTop: theme.spacing(10),
     padding: theme.spacing(1),
   },
   container: {

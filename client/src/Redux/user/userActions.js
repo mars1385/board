@@ -1,4 +1,4 @@
-import { SET_USER_INFO, AUTH_FAILED, AUTH_START, LOGOUT_USER, RESET_ALL } from '../type';
+import { SET_USER_INFO, AUTH_FAILED, AUTH_START, LOGOUT_USER, RESET_ALL, CLEAR_ERROR } from '../type';
 import axios from 'axios';
 import setAuthHeader from '../../Utils/setAuthHeader';
 
@@ -64,3 +64,7 @@ export const getUserInfo = () => async (dispatch) => {
     });
   }
 };
+
+export const clearError = () => ({
+  type: CLEAR_ERROR,
+});

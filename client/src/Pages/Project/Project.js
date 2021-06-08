@@ -30,7 +30,7 @@ import Gravatar from 'react-gravatar';
 // material ui style
 const useStyles = makeStyles((theme) => ({
   project: {
-    marginTop: theme.spacing(12),
+    marginTop: theme.spacing(8),
     padding: theme.spacing(4),
   },
   container: {
@@ -198,4 +198,4 @@ const Project = ({ history, match }) => {
   );
 };
 
-export default Project;
+export default React.memo(Project);

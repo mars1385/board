@@ -11,17 +11,20 @@ const useStyles = makeStyles({
   root: {
     minWidth: 275,
     height: 200,
+    display: 'flex',
+    flexDirection: 'column',
   },
   title: {
     marginBottom: 16,
   },
   desc: {
+    height: 80,
     paddingLeft: 35,
   },
   buttons: {
     display: 'flex',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 40,
   },
 });
 
@@ -47,7 +50,7 @@ const ProjectCard = ({ history, title, description, projectId, creator, userId }
           </Button>
         </CardActions>
         <Typography variant='subtitle1' className={classes.desc} color='textSecondary'>
-          {description.length > 100 ? `${description.substring(0, 100)}...` : description}
+          {description.length > 100 ? `${description.substring(0, 40)}...` : description}
         </Typography>
 
         {creator === userId && (

@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   link: {
-    color: '#000',
+    // color: '#000',
     textAlign: 'center',
     textDecoration: 'none',
   },
@@ -81,7 +81,7 @@ const Header = () => {
   // --
   return (
     <div className={classes.root}>
-      <AppBar position='fixed' className={classes.header}>
+      <AppBar position='absolute' className={classes.header}>
         <Toolbar>
           <Typography variant='h6' className={classes.title}>
             <Link className={classes.link} to='/'>
@@ -90,20 +90,24 @@ const Header = () => {
           </Typography>
           {currentUser ? (
             <div className={classes.auth}>
-              <Typography variant='subtitle2'>{`welcome ${currentUser.name}`}</Typography>
+              <Typography
+                color='textSecondary'
+                variant='subtitle2'>{`welcome ${currentUser.name}`}</Typography>
               <IconButton
                 ref={anchorRef}
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup='true'
                 onClick={handleToggle}
-                color='inherit'>
+                color='secondary'>
                 <AccountCircle />
               </IconButton>
               <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
                   <Grow
                     {...TransitionProps}
-                    style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}>
+                    style={{
+                      transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+                    }}>
                     <Paper>
                       <ClickAwayListener onClickAway={handleClose}>
                         <MenuList autoFocusItem={open} id='menu-list-grow'>

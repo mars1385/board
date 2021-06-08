@@ -4,7 +4,7 @@ import { Container, Avatar, Typography, TextField, Button, makeStyles, Grid } fr
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useForm } from 'react-hook-form';
 
-import { loginUser } from '../../Redux/user/userActions';
+import { loginUser, clearError } from '../../Redux/user/userActions';
 import { selectCurrentUser, selectServerErrors } from '../../Redux/user/userSelectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -13,7 +13,7 @@ import { createStructuredSelector } from 'reselect';
 // material ui style
 const useStyles = makeStyles((theme) => ({
   login: {
-    marginTop: theme.spacing(9),
+    // marginTop: theme.spacing(9),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -36,12 +36,21 @@ const Login = ({ history }) => {
   const { register, handleSubmit, errors, setError, clearErrors } = useForm();
   const classes = useStyles();
 
+  const dispatch = useDispatch();
+
   const { currentUser, serverErrors } = useSelector(
     createStructuredSelector({
       currentUser: selectCurrentUser,
       serverErrors: selectServerErrors,
     })
   );
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
+
   useEffect(() => {
     if (serverErrors) {
       serverErrors.forEach((err) => {
@@ -63,7 +72,6 @@ const Login = ({ history }) => {
       history.push('/projects');
     }
   }, [currentUser, history]);
-  const dispatch = useDispatch();
 
   const onSubmit = (data, event) => {
     event.preventDefault();

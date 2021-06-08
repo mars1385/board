@@ -8,6 +8,8 @@ import jwt_decode from 'jwt-decode';
 import { getUserInfo, logoutUser } from './Redux/user/userActions';
 import Header from './Components/header/Header';
 import PrivateRoute from './Components/private-route/PrivateRoute';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 // ------------end imports-----------
 
 // code splitting with react lazy (our pages)
@@ -16,7 +18,16 @@ const Login = lazy(() => import('./Pages/Login/Login'));
 const Register = lazy(() => import('./Pages/Register/Register'));
 const Projects = lazy(() => import('./Pages/Projects/Projects'));
 const Project = lazy(() => import('./Pages/Project/Project'));
+
 // end
+
+const themeLight = createMuiTheme({
+  palette: {
+    background: {
+      default: '#fafafa',
+    },
+  },
+});
 
 function App() {
   // check login
@@ -40,16 +51,19 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <div className='App'>
-          <Header />
-          <Suspense fallback={'loading...'}>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/login' component={Login} />
-            <Route exact path='/register' component={Register} />
-            <PrivateRoute exact path='/projects' component={Projects} />
-            <PrivateRoute exact path='/projects/:projectId' component={Project} />
-          </Suspense>
-        </div>
+        <MuiThemeProvider theme={themeLight}>
+          <CssBaseline />
+          <div className='App'>
+            <Header />
+            <Suspense fallback={'loading...'}>
+              <Route exact path='/' component={Home} />
+              <Route exact path='/login' component={Login} />
+              <Route exact path='/register' component={Register} />
+              <PrivateRoute exact path='/projects' component={Projects} />
+              <PrivateRoute path='/projects/:projectId' component={Project} />
+            </Suspense>
+          </div>
+        </MuiThemeProvider>
       </Router>
     </Provider>
   );
