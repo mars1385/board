@@ -7,7 +7,7 @@ add people to your project
 # complete ?
 
 still not complete but i will put a demo for what has done so far
-if the demo is slow , because demo is on heroku when complete i will put it on server ,sorry for lag
+if the demo is slow , because demo is on heroku when complete i will put it on server ,sorry for slow
 demo link on heroku
 https://fast-eyrie-37107.herokuapp.com/
 
