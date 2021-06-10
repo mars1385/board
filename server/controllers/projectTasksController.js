@@ -12,9 +12,15 @@ const AuthorizationError = require('../utils/errors/AuthorizationError');
 exports.addTasks = asyncHandler(async (req, res, next) => {
   const project = await authProjectTask(req.params.projectId, req.user, next);
 
-  req.body.project = project._id;
-  req.body.owner = req.user.id;
-  const task = await Task.create(req.body);
+  const tasks = [...req.body];
+
+  const tasksInput = tasks.map((task) => ({
+    project: project._id,
+    owner: req.user.id,
+    body: task.body,
+  }));
+
+  const task = await Task.i(tasksInput);
   res.status(201).json({
     success: true,
     data: task,
